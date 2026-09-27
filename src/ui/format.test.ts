@@ -16,3 +16,11 @@ describe("format", () => {
     expect(duration(90000)).toBe("1 gün 1 sa");
   });
 });
+
+import { mult } from "./format";
+describe("mult", () => {
+  it("keeps decimals for small multipliers", () => {
+    expect(mult(1.5)).toBe("1,50");
+    expect(mult(2500)).toBe("2,50K");
+  });
+});

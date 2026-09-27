@@ -31,3 +31,8 @@ export function duration(sec: number): string {
   if (m > 0) return `${m} dk ${sec % 60} sn`;
   return `${sec} sn`;
 }
+
+/** Multipliers keep two decimals below 1000: 1.5 → "1,50". */
+export function mult(v: number): string {
+  return v < 1000 ? v.toFixed(2).replace(".", ",") : fmt(v);
+}

@@ -3,7 +3,7 @@ import { DISTRICTS_BY_ID } from "../content/districts";
 import { FEATURES } from "../content/features";
 import { clickValue, devirGain, onlineIncome } from "../engine/derive";
 import { useGame } from "../store/gameStore";
-import { fmt, money, rate } from "./format";
+import { fmt, money, mult, rate } from "./format";
 import { Simit } from "./Simit";
 
 export function ClickerPanel() {
@@ -58,7 +58,7 @@ export function ClickerPanel() {
       {FEATURES.devir && (
         <div className="devir">
           <div className="devir-row">
-            <span>Ün <b>{fmt(ds.un)}</b> · üretim ×{fmt(1 + 0.05 * ds.un)}</span>
+            <span>Ün <b>{fmt(ds.un)}</b> · üretim ×{mult(1 + 0.05 * ds.un)}</span>
           </div>
           <button type="button" className="devir-btn" disabled={gain < 1} onClick={() => {
             if (window.confirm(`Dükkânı çırağına devret: +${fmt(gain)} ün kazanırsın, kasa ve dükkân sıfırlanır. Emin misin?`)) doDevir();
