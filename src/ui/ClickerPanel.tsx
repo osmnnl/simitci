@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { BALANCE } from "../content/balance";
 import { DISTRICTS_BY_ID } from "../content/districts";
 import { FEATURES } from "../content/features";
 import { clickValue, devirGain, onlineIncome } from "../engine/derive";
@@ -50,9 +51,9 @@ export function ClickerPanel() {
       </div>
       <p className="muted small">Tık başına {money(cv)} · {rate(inc)} ₺/sn</p>
       {FEATURES.crowd && (
-        <div className="meter" title="Kalabalık: tıkladıkça artar, üretimi en fazla ×1,5'e çıkarır">
+        <div className="meter" title={`Kalabalık: tıkladıkça artar, üretimi en fazla ×${mult(1 + BALANCE.crowdMax)} yapar`}>
           <span className="label">Kalabalık ×{(1 + game.crowd).toFixed(2).replace(".", ",")}</span>
-          <div className="bar"><div className="fill" style={{ width: `${(game.crowd / 0.5) * 100}%` }} /></div>
+          <div className="bar"><div className="fill" style={{ width: `${(game.crowd / BALANCE.crowdMax) * 100}%` }} /></div>
         </div>
       )}
       {FEATURES.devir && (

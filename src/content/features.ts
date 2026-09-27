@@ -6,7 +6,7 @@ export const FEATURES = {
   devir: true, // Faz 2
   skills: true, // Faz 3
   districts: true, // Faz 4
-  orders: false, // Faz 5
-  crowd: false, // Faz 5
+  orders: true, // Faz 5
+  crowd: true, // Faz 5
 };
 export type FeatureFlags = typeof FEATURES;
