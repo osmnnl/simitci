@@ -74,3 +74,6 @@ button:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
 .earn-row b{color:var(--gold)}
 .primary{appearance:none;border:0;background:var(--red);color:var(--page);font-weight:700;padding:10px;border-radius:12px;cursor:pointer;margin-top:8px}
 @media (prefers-reduced-motion:reduce){.floater{animation:none;opacity:0}.simit-btn,.simit-btn.pressed{transition:none;transform:none}}
+.confirm-actions{display:flex;gap:10px;margin-top:10px}
+.confirm-actions button{flex:1}
+.modal .ghost{border-color:rgba(255,241,207,.4);color:var(--page)}

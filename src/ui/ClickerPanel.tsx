@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useConfirm } from "./ConfirmModal";
 import { BALANCE } from "../content/balance";
 import { DISTRICTS_BY_ID } from "../content/districts";
 import { FEATURES } from "../content/features";
@@ -13,6 +14,7 @@ export function ClickerPanel() {
   const doDevir = useGame((s) => s.devir);
   const [floaters, setFloaters] = useState<{ id: number; v: number; x: number }[]>([]);
   const [pressed, setPressed] = useState(false);
+  const { confirm, node: confirmModal } = useConfirm();
   const id = game.active;
   const ds = game.districts[id];
   const def = DISTRICTS_BY_ID[id];
@@ -61,14 +63,19 @@ export function ClickerPanel() {
           <div className="devir-row">
             <span>Ün <b>{fmt(ds.un)}</b> · ün bonusu ×{mult(1 + 0.05 * ds.un)}</span>
           </div>
-          <button type="button" className="devir-btn" disabled={gain < 1} onClick={() => {
-            if (window.confirm(`Dükkânı çırağına devret: +${fmt(gain)} ün kazanırsın, kasa ve dükkân sıfırlanır. Emin misin?`)) doDevir();
+          <button type="button" className="devir-btn" disabled={gain < 1} onClick={async () => {
+            if (await confirm({
+              title: "Dükkânı devret",
+              body: `Çırağına devredersin: +${fmt(gain)} ün kazanırsın, kasa ve dükkân sıfırlanır.`,
+              confirmLabel: `Devret (+${fmt(gain)} ün)`,
+            })) doDevir();
           }}>
             Devret {gain >= 1 ? `(+${fmt(gain)} ün)` : ""}
           </button>
           <p className="muted small">{gain >= Math.max(10, ds.un) ? "Şimdi devretmek iyi bir fikir." : "Ün kazancı arttıkça devretmek daha değerli olur."}</p>
         </div>
       )}
+      {confirmModal}
     </section>
   );
 }
