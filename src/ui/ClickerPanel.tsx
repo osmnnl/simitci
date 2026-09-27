@@ -58,7 +58,7 @@ export function ClickerPanel() {
       {FEATURES.devir && (
         <div className="devir">
           <div className="devir-row">
-            <span>Ün <b>{fmt(ds.un)}</b> · üretim ×{mult(1 + 0.05 * ds.un)}</span>
+            <span>Ün <b>{fmt(ds.un)}</b> · ün bonusu ×{mult(1 + 0.05 * ds.un)}</span>
           </div>
           <button type="button" className="devir-btn" disabled={gain < 1} onClick={() => {
             if (window.confirm(`Dükkânı çırağına devret: +${fmt(gain)} ün kazanırsın, kasa ve dükkân sıfırlanır. Emin misin?`)) doDevir();
