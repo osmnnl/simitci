@@ -4,7 +4,7 @@
  */
 export const FEATURES = {
   devir: true, // Faz 2
-  skills: false, // Faz 3
+  skills: true, // Faz 3
   districts: false, // Faz 4
   orders: false, // Faz 5
   crowd: false, // Faz 5

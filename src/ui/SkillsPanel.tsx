@@ -1,3 +1,4 @@
+import { FEATURES } from "../content/features";
 import { SKILLS } from "../content/skills";
 import { skillLevel } from "../engine/derive";
 import { xpForLevel } from "../engine/math";
@@ -10,7 +11,7 @@ export function SkillsPanel() {
     <section className="panel" aria-label="Ustalık">
       <h2>Ustalık</h2>
       <ul className="skills">
-        {SKILLS.map((sk) => {
+        {SKILLS.filter((sk) => sk.id !== "tedarik" || FEATURES.orders).map((sk) => {
           const L = skillLevel(game, sk.id);
           const xp = game.skillsXp[sk.id];
           const lo = xpForLevel(L);
