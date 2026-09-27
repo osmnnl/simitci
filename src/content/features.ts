@@ -1,0 +1,12 @@
+/**
+ * Phase switches. Each roadmap phase ships by flipping its flag, so a phase
+ * can be released (or rolled back) without touching engine code.
+ */
+export const FEATURES = {
+  devir: false, // Faz 2
+  skills: false, // Faz 3
+  districts: false, // Faz 4
+  orders: false, // Faz 5
+  crowd: false, // Faz 5
+};
+export type FeatureFlags = typeof FEATURES;

@@ -1,38 +1,27 @@
 # Simitçi
 
-Tabladan fırın imparatorluğuna: sıfır bütçeli, tarayıcı tabanlı bir idle/clicker oyunu.
+Tabladan fabrikaya: tarayıcıda çalışan, günler ve haftalar süren bir idle/clicker oyunu.
 
-Bu depo, PRD'nin S0–S3 sprintlerini ve S4'ün bir kısmını kapsar: çekirdek ekonomi,
-üretici/upgrade sistemi, delta-time game loop, kalıcı kayıt, offline kazanç ve
-temel seviye/XP sistemi çalışır durumdadır.
+Oyna: https://osmnnl.github.io/simitci/
 
 ## Geliştirme
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm test           # vitest, tek seferlik
-npm run test:coverage
-npm run lint       # oxlint
-npm run build      # tsc -b && vite build -> dist/
-npm run preview    # dist/ içeriğini yerelde servis eder
+npm run dev      # http://localhost:5173
+npm test         # birim testleri + denge testleri (CI kapısı)
+npm run build
+REPORT=1 DAYS=30 npx vitest run src/sim/report.test.ts   # denge raporu
 ```
 
-## Klasör yapısı
+## Mimari
 
-- `src/engine/` — saf oyun mantığı (React yok): ekonomi formülleri, tick, actions, offline hesap.
-- `src/content/` — üretici, upgrade ve tip tanımları. Denge değerleri yalnızca burada.
-- `src/save/` — kayıt şeması, versiyon/migration, localStorage okuma-yazma, export/import.
-- `src/store/` — Zustand store; engine fonksiyonlarını React'e bağlar.
-- `src/loop/` — delta-time game loop hook'u (tick, otomatik kayıt, sekme görünürlüğü).
-- `src/ui/` — React bileşenleri.
-- `src/sim/` — S5'te eklenecek headless denge simülasyonu için ayrılmış, şu an boş.
+- `src/content/` — tüm oyun verisi ve denge sabitleri (`balance.ts`). Sayılar yalnızca burada.
+- `src/content/features.ts` — faz bayrakları; her faz bir bayrağı açarak yayınlanır.
+- `src/engine/` — saf oyun mantığı (React yok): türetilmiş değerler, aksiyonlar, tick, offline.
+- `src/sim/` — gerçek motoru süren başsız oyuncu modeli. `balance.test.ts` hedef zamanlar
+  bandın dışına çıkarsa CI'ı kırar.
+- `src/save/` — kayıt şeması v2; eksik alanlar varsayılanla doldurulur.
+- `src/store/`, `src/loop/`, `src/ui/` — Zustand store, oyun döngüsü, React arayüzü.
 
-## Durum
-
-PRD ve sprint planı: proje içindeki Claude Doc'a bakın (bu depoda değil, ayrı bir dokümanda).
-
-Kapsam dışı / henüz yapılmadı: Kalfa/Tabla/Seyyar araba'nın tam üretim zinciri testi
-(üreticiler tanımlı ve satın alınabilir, ancak asıl playtest S5'te dengelenecek),
-squash/uçuşan-sayı polish'inin bir kısmı, istatistik paneli, toplu satın alma,
-ve S5'in tamamı (headless sim, playtest, itch.io yayını).
+Tasarım ve denge kararları: "Simitçi — Uzun Oyun Tasarım Planı (v2)" dokümanı.
