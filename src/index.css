@@ -1,0 +1,25 @@
+:root {
+  box-sizing: border-box;
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+}
+
+button {
+  font-family: inherit;
+}
