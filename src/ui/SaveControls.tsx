@@ -18,7 +18,17 @@ export function SaveControls() {
     <>
     <div className="save-box">
       <button type="button" onClick={() => { save(); setMsg("Kaydedildi."); }}>Şimdi kaydet</button>
-      <button type="button" onClick={() => { void navigator.clipboard?.writeText(exportCode()).catch(() => undefined); setMsg("Kayıt kodu panoya kopyalandı."); }}>Dışa aktar</button>
+      <button type="button" onClick={async () => {
+        const code = exportCode();
+        try {
+          if (!navigator.clipboard) throw new Error("clipboard API yok");
+          await navigator.clipboard.writeText(code);
+          setMsg("Kayıt kodu panoya kopyalandı.");
+        } catch {
+          setText(code);
+          setMsg("Kopyalama başarısız oldu; kodu aşağıdaki kutudan elle kopyala.");
+        }
+      }}>Dışa aktar</button>
       <textarea rows={2} placeholder="Kayıt kodunu yapıştır" value={text} onChange={(e) => setText(e.target.value)} />
       <button type="button" disabled={!text.trim()} onClick={() => setMsg(importCode(text) ? "Kayıt yüklendi." : "Kod geçersiz.")}>İçe aktar</button>
       <button type="button" className="danger" onClick={async () => {
