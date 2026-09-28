@@ -22,8 +22,9 @@ export function DistrictTabs() {
             + {firstLocked.name} aç
           </button>
         ) : (
-          <span className="tab locked" title={firstLocked.tagline}>
-            {firstLocked.name} · Korkuteli'de {fmt(firstLocked.unlockUn)} ün
+          <span className="tab locked" title={`${firstLocked.tagline} Korkuteli'de ${fmt(firstLocked.unlockUn)} ün gerekir.`}>
+            <span className="full">{firstLocked.name} · Korkuteli'de {fmt(firstLocked.unlockUn)} ün</span>
+            <span className="short">🔒 {firstLocked.name} · {fmt(firstLocked.unlockUn)} ün</span>
           </span>
         )
       )}

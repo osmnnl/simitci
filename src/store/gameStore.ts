@@ -77,9 +77,13 @@ export const useGame = create<Store>((set, get) => ({
     const { state, unlocked } = checkAchievements(game);
     game = state;
     set((s) => ({ game, unseenAchievements: s.unseenAchievements + unlocked.length }));
-    for (const id of unlocked) {
-      const a = ACHIEVEMENTS.find((x) => x.id === id);
-      if (a) get().pushToast({ title: `Başarım: ${a.name}`, body: `${a.desc} · kalıcı +%1 üretim`, tone: "achievement" });
+    const defs = unlocked.map((id) => ACHIEVEMENTS.find((x) => x.id === id)).filter((a) => !!a);
+    if (defs.length === 1) {
+      get().pushToast({ title: `Başarım: ${defs[0].name}`, body: `${defs[0].desc} · kalıcı +%1 üretim`, tone: "achievement" });
+    } else if (defs.length > 1) {
+      // several at once (e.g. first load of an older save): one summary instead of a wall of toasts
+      const names = defs.slice(0, 3).map((a) => a.name).join(", ") + (defs.length > 3 ? ` +${defs.length - 3}` : "");
+      get().pushToast({ title: `${defs.length} yeni başarım`, body: `${names} · kalıcı +%${defs.length} üretim`, tone: "achievement" });
     }
   },
   catchUp: () => {

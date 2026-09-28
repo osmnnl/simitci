@@ -1,3 +1,4 @@
+:root{--page:#efe4d2;--night:#2a0d0b;--cobalt:#1d3f9a;--gold:#e8a64a;--red:#d8322a;--card:#fff8ea;--muted:#7b5a4a;--line:#2a0d0b}
 .shell{--page:#efe4d2;--night:#2a0d0b;--cobalt:#1d3f9a;--gold:#e8a64a;--red:#d8322a;--card:#fff8ea;--muted:#7b5a4a;--line:#2a0d0b;
   min-height:100%;background:var(--page);color:var(--night);max-width:1240px;margin:0 auto;
   padding:clamp(12px,3vw,28px);padding-top:calc(clamp(12px,3vw,28px) + env(safe-area-inset-top,0px));padding-bottom:calc(clamp(12px,3vw,28px) + env(safe-area-inset-bottom,0px))}
@@ -164,3 +165,18 @@ button,.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .modal{max-height:calc(100dvh - 40px);overflow:auto}
 }
 @media (prefers-reduced-motion:reduce){.event-banner,.toast,.m-main{animation:none}}
+
+/* ---------- mobile UX polish ---------- */
+.title-row{flex-wrap:wrap;row-gap:2px}
+.badge,.mchip{white-space:nowrap}
+.tab .short{display:none}
+.m-top .tab .full{display:none}
+.m-top .tab .short{display:inline}
+.m-top .tab{min-height:44px}
+.m-main .devir-btn{min-height:48px}
+.m-save .ghost,.m-save .save-box button{min-height:44px}
+@media (max-width:759px){
+  .toast:not(:nth-last-child(-n+2)){display:none}
+  .toast{padding:8px 12px}
+  .toast span{font-size:12px}
+}

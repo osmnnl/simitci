@@ -11,6 +11,6 @@ export const FEATURES = {
   mastery: true, // Faz 6: ürün ustalığı
   events: true, // Faz 7: rastgele olaylar
   achievements: true, // Faz 8: başarımlar
-  mobileShell: false, // Faz 9: mobil arayüz
+  mobileShell: true, // Faz 9: mobil arayüz
 };
 export type FeatureFlags = typeof FEATURES;
