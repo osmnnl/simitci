@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useConfirm } from "./ConfirmModal";
+import { BuffChips } from "./EventBanner";
 import { BALANCE } from "../content/balance";
 import { DISTRICTS_BY_ID } from "../content/districts";
 import { FEATURES } from "../content/features";
@@ -8,7 +9,7 @@ import { useGame } from "../store/gameStore";
 import { fmt, money, mult, rate } from "./format";
 import { Simit } from "./Simit";
 
-export function ClickerPanel() {
+export function ClickerPanel({ compact = false }: { compact?: boolean }) {
   const game = useGame((s) => s.game);
   const click = useGame((s) => s.click);
   const doDevir = useGame((s) => s.devir);
@@ -32,26 +33,27 @@ export function ClickerPanel() {
   }
 
   return (
-    <section className="clicker" aria-label="Dükkân">
-      <div className="stat-row">
+    <section className={"clicker" + (compact ? " compact" : "")} aria-label="Dükkân">
+      {!compact && <div className="stat-row">
         <div>
           <span className="label">Kasa</span>
           <span className="big gold">{money(ds.money)}</span>
         </div>
         <div className="right">
           <span className="label">Gelir</span>
-          <span className="big">{money(inc).replace("₺", "₺")}<small>/sn</small></span>
+          <span className="big">{money(inc)}<small>/sn</small></span>
         </div>
-      </div>
+      </div>}
       <div className="simit-wrap">
         <button type="button" className={"simit-btn" + (pressed ? " pressed" : "")} onClick={onClick} aria-label={`${def.productName} yap, +${fmt(cv)}`}>
-          <Simit size={210} />
+          <Simit size={compact ? 260 : 210} />
         </button>
         {floaters.map((f) => (
           <span key={f.id} className="floater" style={{ ["--fx" as string]: `${f.x}px` }}>+{fmt(f.v)}</span>
         ))}
       </div>
       <p className="muted small">Tık başına {money(cv)} · {rate(inc)} ₺/sn</p>
+      <BuffChips />
       {FEATURES.crowd && (
         <div className="meter" title={`Kalabalık: tıkladıkça artar, üretimi en fazla ×${mult(1 + BALANCE.crowdMax)} yapar`}>
           <span className="label">Kalabalık ×{(1 + game.crowd).toFixed(2).replace(".", ",")}</span>

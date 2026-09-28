@@ -60,6 +60,7 @@ export function devir(state: GameState, f: FeatureFlags = FEATURES): GameState {
   fresh.un = old.un + gain;
   fresh.lifetimeEarned = old.lifetimeEarned + old.runEarned;
   fresh.devirs = old.devirs + 1;
+  s.stats.devirsTotal += 1;
   // the new owner starts with one apprentice, so an idle district restarts by itself
   fresh.owned[0] = 1;
   s.districts[id] = fresh;
@@ -109,5 +110,6 @@ export function claimOrder(state: GameState, slot: number, now: number, f: Featu
   earn(s, o.district, o.reward);
   if (f.skills && tpl) s.skillsXp.tedarik += tpl.xp;
   s.orders[slot] = emptyOrder();
+  s.stats.ordersClaimed += 1;
   return s;
 }

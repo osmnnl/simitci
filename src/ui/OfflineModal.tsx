@@ -18,6 +18,15 @@ export function OfflineModal() {
         {rows.length === 0 ? <p className="muted">Henüz kimse çalışmıyordu.</p> : rows.map(([id, v]) => (
           <p key={id} className="earn-row"><span>{DISTRICTS_BY_ID[id].name}</span><b>+{money(v)}</b></p>
         ))}
+        {report.levelUps.length > 0 && (
+          <div className="levelups">
+            <p className="eyebrow small">Yükselenler</p>
+            {report.levelUps.slice(0, 6).map((l) => (
+              <p key={l.name} className="earn-row"><span>{l.name}</span><b>{l.from} → {l.to}</b></p>
+            ))}
+            {report.levelUps.length > 6 && <p className="muted small">+{report.levelUps.length - 6} daha</p>}
+          </div>
+        )}
         <button type="button" className="primary" onClick={dismiss}>Devam et</button>
       </div>
     </div>

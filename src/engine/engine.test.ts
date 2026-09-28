@@ -6,8 +6,8 @@ import { baseIncome, devirGain, offlineCapSeconds, tierAllowed, tierMult } from 
 import { applyOffline, tick } from "./tick";
 import { normalize } from "../save/save";
 
-const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true };
-const OFF = { devir: false, skills: false, districts: false, orders: false, crowd: false };
+const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true, mastery: true, events: true, achievements: true, mobileShell: false };
+const OFF = { devir: false, skills: false, districts: false, orders: false, crowd: false, mastery: false, events: false, achievements: false, mobileShell: false };
 const rich = (money = 1e30) => {
   const s = createInitialState(0);
   s.districts.korkuteli.money = money;

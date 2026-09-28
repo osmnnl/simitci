@@ -8,8 +8,8 @@ import { unlockedDistricts } from "../engine/derive";
 
 const H = 3600;
 const D = 86400;
-const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true };
-const OFF = { devir: false, skills: false, districts: false, orders: false, crowd: false };
+const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true, mastery: true, events: true, achievements: true, mobileShell: false };
+const OFF = { devir: false, skills: false, districts: false, orders: false, crowd: false, mastery: false, events: false, achievements: false, mobileShell: false };
 
 describe("Faz 1 pacing (no meta systems)", () => {
   const r = simulate(0.1, OFF);

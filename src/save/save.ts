@@ -42,7 +42,18 @@ export function normalize(raw: unknown, now = Date.now()): GameState {
     return o && typeof o.templateId === "string" ? { ...emptyOrder(), ...o } : emptyOrder();
   });
   base.lastSeen = num(r.lastSeen, now);
-  base.stats = { ...base.stats, ...(r.stats ?? {}) };
+  base.masteryXp = TIERS.map((_, i) => num(r.masteryXp?.[i]));
+  base.achievements = Array.isArray(r.achievements) ? r.achievements.filter((a): a is string => typeof a === "string") : [];
+  // events and buffs never survive a reload: they only exist while playing
+  base.event = null;
+  base.buffs = [];
+  base.nextEventAt = now + 60_000;
+  const st: Partial<GameState["stats"]> = r.stats ?? {};
+  base.stats = {
+    clicks: num(st.clicks), totalEarned: num(st.totalEarned), playTimeSec: num(st.playTimeSec),
+    startedAt: num(st.startedAt, now), ordersClaimed: num(st.ordersClaimed), eventsCaught: num(st.eventsCaught),
+    devirsTotal: num(st.devirsTotal, Object.values(base.districts).reduce((a, d) => a + d.devirs, 0)),
+  };
   return base;
 }
 

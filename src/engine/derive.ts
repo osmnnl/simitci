@@ -27,6 +27,33 @@ export function tierMult(ds: DistrictState, tier: number, owned = ds.owned[tier]
   return m;
 }
 
+/** Ürün ustalığı level of one producer (1–99). */
+export function masteryLevel(s: GameState, tier: number, f: FeatureFlags = FEATURES): number {
+  return f.mastery ? levelFromXp(s.masteryXp[tier] ?? 0) : 1;
+}
+
+export function masteryMult(s: GameState, tier: number, f: FeatureFlags = FEATURES): number {
+  const L = masteryLevel(s, tier, f);
+  const grand = L >= BALANCE.skillMaxLevel ? BALANCE.masteryGrandSealMult : 1;
+  return (1 + BALANCE.masteryBonusPerLevel * (L - 1)) * grand;
+}
+
+/** Seals reached (0–4) for UI badges. */
+export function masterySeals(s: GameState, tier: number, f: FeatureFlags = FEATURES): number {
+  const L = masteryLevel(s, tier, f);
+  return BALANCE.masterySeals.filter((x) => L >= x).length;
+}
+
+export function achievementMult(s: GameState, f: FeatureFlags = FEATURES): number {
+  return f.achievements ? 1 + BALANCE.achievementBonus * s.achievements.length : 1;
+}
+
+/** Active buff multiplier of a kind; `now` defaults to the last tick time. */
+export function buffMult(s: GameState, kind: "prod" | "click", f: FeatureFlags = FEATURES, now = s.lastSeen): number {
+  if (!f.events) return 1;
+  return s.buffs.reduce((m, b) => (b.kind === kind && b.until > now ? m * b.mult : m), 1);
+}
+
 /** Everything that multiplies a district's whole production. */
 export function globalMult(s: GameState, id: DistrictId, f: FeatureFlags = FEATURES): number {
   const ds = s.districts[id];
@@ -34,7 +61,7 @@ export function globalMult(s: GameState, id: DistrictId, f: FeatureFlags = FEATU
   const devir = f.devir ? 1 + BALANCE.unBonus * ds.un : 1;
   const firin = 1 + BALANCE.skillBonusPerLevel * (skillLevel(s, "firincilik", f) - 1);
   const satis = 1 + BALANCE.skillBonusPerLevel * (skillLevel(s, "satis", f) - 1);
-  return devir * firin * satis * markaMult(s, f) * def.priceMult;
+  return devir * firin * satis * markaMult(s, f) * def.priceMult * achievementMult(s, f);
 }
 
 /** Idle production (₺/sn), no crowd. */
@@ -43,7 +70,7 @@ export function baseIncome(s: GameState, id: DistrictId, f: FeatureFlags = FEATU
   let sum = 0;
   for (const t of TIERS) {
     const own = ds.owned[t.id];
-    if (own > 0) sum += own * t.baseRate * tierMult(ds, t.id);
+    if (own > 0) sum += own * t.baseRate * tierMult(ds, t.id) * masteryMult(s, t.id, f);
   }
   return sum * globalMult(s, id, f);
 }
@@ -54,14 +81,14 @@ export function crowdMult(s: GameState, id: DistrictId, f: FeatureFlags = FEATUR
 
 /** Live production while the player is present. */
 export function onlineIncome(s: GameState, id: DistrictId, f: FeatureFlags = FEATURES): number {
-  return baseIncome(s, id, f) * crowdMult(s, id, f);
+  return baseIncome(s, id, f) * crowdMult(s, id, f) * buffMult(s, "prod", f);
 }
 
 export function clickValue(s: GameState, f: FeatureFlags = FEATURES): number {
   const def = DISTRICTS_BY_ID[s.active];
   const hamur = 1 + BALANCE.hamurClickBonusPerLevel * (skillLevel(s, "hamur", f) - 1);
   const clickMult = f.districts ? def.clickMult : 1;
-  return (BALANCE.clickBase + BALANCE.clickIncomePct * onlineIncome(s, s.active, f)) * hamur * clickMult;
+  return (BALANCE.clickBase + BALANCE.clickIncomePct * onlineIncome(s, s.active, f)) * hamur * clickMult * buffMult(s, "click", f);
 }
 
 export function tierCostBase(id: DistrictId, tier: number, f: FeatureFlags = FEATURES): number {
@@ -95,7 +122,7 @@ export function tierMarginal(s: GameState, id: DistrictId, tier: number, f: Feat
   const own = ds.owned[tier];
   const before = own * t.baseRate * tierMult(ds, tier, own);
   const after = (own + 1) * t.baseRate * tierMult(ds, tier, own + 1);
-  return (after - before) * globalMult(s, id, f);
+  return (after - before) * masteryMult(s, tier, f) * globalMult(s, id, f);
 }
 
 export function nextUpgrade(ds: DistrictState) {
@@ -114,7 +141,7 @@ export function upgradeMarginal(s: GameState, id: DistrictId, f: FeatureFlags = 
   const u = nextUpgrade(ds);
   if (!u) return 0;
   const t = TIERS[u.tier];
-  return ds.owned[u.tier] * t.baseRate * tierMult(ds, u.tier) * (u.mult - 1) * globalMult(s, id, f);
+  return ds.owned[u.tier] * t.baseRate * tierMult(ds, u.tier) * (u.mult - 1) * masteryMult(s, u.tier, f) * globalMult(s, id, f);
 }
 
 export function devirGain(s: GameState, id: DistrictId): number {
@@ -148,4 +175,9 @@ export function offlineCapSeconds(s: GameState, f: FeatureFlags = FEATURES): num
 export function districtUnlockable(s: GameState, id: DistrictId, f: FeatureFlags = FEATURES): boolean {
   if (!f.districts || s.districts[id].unlocked) return false;
   return s.districts.korkuteli.un >= DISTRICTS_BY_ID[id].unlockUn;
+}
+
+/** Total owned of one producer across all unlocked districts (drives mastery XP). */
+export function totalOwned(s: GameState, tier: number, f: FeatureFlags = FEATURES): number {
+  return unlockedDistricts(s, f).reduce((a, id) => a + s.districts[id].owned[tier], 0);
 }

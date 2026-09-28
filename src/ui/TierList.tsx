@@ -1,7 +1,7 @@
 import { BALANCE } from "../content/balance";
 import { FEATURES } from "../content/features";
 import { TIERS } from "../content/tiers";
-import { tierAllowed, tierCost, tierMaxAffordable, tierMult, tierVisible, globalMult } from "../engine/derive";
+import { tierAllowed, tierCost, tierMaxAffordable, tierMult, tierVisible, globalMult, masteryLevel, masteryMult } from "../engine/derive";
 import { useGame } from "../store/gameStore";
 import { money, rate } from "./format";
 
@@ -32,13 +32,15 @@ export function TierList() {
           const n = qty === "max" ? Math.max(1, tierMaxAffordable(game, id, t.id)) : qty;
           const cost = tierCost(game, id, t.id, n);
           const next = BALANCE.milestones.find((m) => m > own);
-          const each = t.baseRate * tierMult(ds, t.id) * gm;
+          const each = t.baseRate * tierMult(ds, t.id) * masteryMult(game, t.id) * gm;
+          const mL = FEATURES.mastery ? masteryLevel(game, t.id) : 1;
           return (
             <li key={t.id} className={"card" + (allowed ? "" : " locked")}>
               <div className="card-main">
                 <div className="title-row">
                   <h3>{t.name}</h3>
                   {own > 0 && <span className="badge">{own}</span>}
+                  {mL > 1 && <span className="mchip" title="Ürün ustalığı seviyesi">Usta {mL}</span>}
                 </div>
                 <p className="muted small">{allowed ? t.description : `Fırıncılık ${t.gateLevel}. seviyede açılır`}</p>
                 {allowed && own > 0 && (

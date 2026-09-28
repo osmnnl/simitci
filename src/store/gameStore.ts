@@ -5,9 +5,26 @@ import { BALANCE } from "../content/balance";
 import { createInitialState, type GameState } from "../engine/state";
 import { applyOffline, tick, type OfflineReport } from "../engine/tick";
 import { exportSave, importSave, loadGame, saveGame } from "../save/save";
+import { claimEvent, eventTick } from "../engine/events";
+import { checkAchievements } from "../engine/achievements";
+import { ACHIEVEMENTS } from "../content/achievements";
+
+export interface Toast {
+  id: number;
+  title: string;
+  body: string;
+  tone: "achievement" | "event";
+}
+let toastSeq = 0;
 
 interface Store {
   game: GameState;
+  toasts: Toast[];
+  unseenAchievements: number;
+  pushToast: (t: Omit<Toast, "id">) => void;
+  dismissToast: (id: number) => void;
+  markAchievementsSeen: () => void;
+  claimEvent: () => void;
   offline: OfflineReport | null;
   buyQty: A.BuyQty;
   setBuyQty: (q: A.BuyQty) => void;
@@ -31,6 +48,16 @@ interface Store {
 export const useGame = create<Store>((set, get) => ({
   game: loadGame() ?? createInitialState(),
   offline: null,
+  toasts: [],
+  unseenAchievements: 0,
+  pushToast: (t) => {
+    const toast = { ...t, id: ++toastSeq };
+    set((s) => ({ toasts: [...s.toasts.slice(-3), toast] }));
+    window.setTimeout(() => get().dismissToast(toast.id), 4500);
+  },
+  dismissToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+  markAchievementsSeen: () => set({ unseenAchievements: 0 }),
+  claimEvent: () => set((s) => ({ game: claimEvent(s.game, Date.now()) })),
   buyQty: 1,
   setBuyQty: (buyQty) => set({ buyQty }),
   dismissOffline: () => set({ offline: null }),
@@ -42,7 +69,17 @@ export const useGame = create<Store>((set, get) => ({
   unlockDistrict: (id) => set((s) => ({ game: A.unlockDistrict(s.game, id) })),
   startOrder: (slot, t) => set((s) => ({ game: A.startOrder(s.game, slot, t, Date.now()) })),
   claimOrder: (slot) => set((s) => ({ game: A.claimOrder(s.game, slot, Date.now()) })),
-  tick: (dt) => set((s) => ({ game: tick(s.game, dt, Date.now()) })),
+  tick: (dt) => {
+    const now = Date.now();
+    let game = eventTick(tick(get().game, dt, now), now, Math.random);
+    const { state, unlocked } = checkAchievements(game);
+    game = state;
+    set((s) => ({ game, unseenAchievements: s.unseenAchievements + unlocked.length }));
+    for (const id of unlocked) {
+      const a = ACHIEVEMENTS.find((x) => x.id === id);
+      if (a) get().pushToast({ title: `Başarım: ${a.name}`, body: `${a.desc} · kalıcı +%1 üretim`, tone: "achievement" });
+    }
+  },
   catchUp: () => {
     const { state, report } = applyOffline(get().game, Date.now());
     set({ game: state, offline: report.elapsedSeconds >= BALANCE.offlineModalMinSeconds ? report : get().offline });

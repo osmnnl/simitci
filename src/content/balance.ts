@@ -44,4 +44,18 @@ export const BALANCE = {
   // Orders
   orderSlots: 3,
   orderRewardFactor: 0.3, // reward = income at start × duration × factor
+
+  // Ürün ustalığı (per producer, account-wide, never reset)
+  masteryXpRate: 0.05, // XP/s × sqrt(total owned of that producer across districts)
+  masteryBonusPerLevel: 0.01, // +1% production per level
+  masterySeals: [25, 50, 75, 99],
+  masteryGrandSealMult: 2, // level 99 doubles the producer again
+
+  // Rastgele olaylar (online only)
+  eventMinGapSec: 240,
+  eventMaxGapSec: 480,
+  eventClaimWindowSec: 15,
+
+  // Başarımlar
+  achievementBonus: 0.01, // +1% production each
 };

@@ -12,6 +12,7 @@ import {
   upgradeCost, upgradeMarginal,
 } from "../engine/derive";
 import { createInitialState, type GameState } from "../engine/state";
+import { checkAchievements } from "../engine/achievements";
 import { applyOffline, tick } from "../engine/tick";
 
 export interface Profile {
@@ -68,6 +69,7 @@ function spendAll(state: GameState, t: number, f: FeatureFlags, r: SimResult): G
       r.unlocks[d.id] = t;
     }
   }
+  s = checkAchievements(s, f).state;
   // an active player plays the newest district they opened
   const newest = unlockedDistricts(s, f).at(-1) ?? original;
   return selectDistrict(s, newest);

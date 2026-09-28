@@ -2,6 +2,7 @@ import { DISTRICTS, type DistrictId } from "../content/districts";
 import type { SkillId } from "../content/skills";
 import { TIERS } from "../content/tiers";
 import { BALANCE } from "../content/balance";
+import type { EventKind } from "../content/events";
 
 export interface DistrictState {
   unlocked: boolean;
@@ -22,6 +23,17 @@ export interface OrderSlot {
   reward: number;
 }
 
+export interface ActiveEvent {
+  kind: EventKind;
+  expiresAt: number; // must be claimed before this
+}
+
+export interface Buff {
+  kind: "prod" | "click";
+  mult: number;
+  until: number;
+}
+
 export interface GameState {
   version: 2;
   districts: Record<DistrictId, DistrictState>;
@@ -30,7 +42,20 @@ export interface GameState {
   crowd: number;
   orders: OrderSlot[];
   lastSeen: number;
-  stats: { clicks: number; totalEarned: number; playTimeSec: number; startedAt: number };
+  masteryXp: number[]; // per producer tier
+  event: ActiveEvent | null;
+  buffs: Buff[];
+  nextEventAt: number;
+  achievements: string[];
+  stats: {
+    clicks: number;
+    totalEarned: number;
+    playTimeSec: number;
+    startedAt: number;
+    ordersClaimed: number;
+    eventsCaught: number;
+    devirsTotal: number;
+  };
 }
 
 export function newDistrict(unlocked: boolean): DistrictState {
@@ -62,7 +87,12 @@ export function createInitialState(now: number = Date.now()): GameState {
     crowd: 0,
     orders: Array.from({ length: BALANCE.orderSlots }, emptyOrder),
     lastSeen: now,
-    stats: { clicks: 0, totalEarned: 0, playTimeSec: 0, startedAt: now },
+    masteryXp: TIERS.map(() => 0),
+    event: null,
+    buffs: [],
+    nextEventAt: now + BALANCE.eventMinGapSec * 1000,
+    achievements: [],
+    stats: { clicks: 0, totalEarned: 0, playTimeSec: 0, startedAt: now, ordersClaimed: 0, eventsCaught: 0, devirsTotal: 0 },
   };
 }
 

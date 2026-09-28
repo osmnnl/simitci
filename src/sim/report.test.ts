@@ -4,7 +4,7 @@ import { simulate, fmtTime } from "./player";
 import { TIERS } from "../content/tiers";
 
 const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env ?? {};
-const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true };
+const ALL = { devir: true, skills: true, districts: true, orders: true, crowd: true, mastery: true, events: true, achievements: true, mobileShell: false };
 it.skipIf(!env.REPORT)("balance report", () => {
   const r = simulate(Number(env.DAYS ?? 30), ALL);
   for (const [d, ft] of Object.entries(r.firstTier)) {
