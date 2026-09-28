@@ -48,6 +48,13 @@ describe("ürün ustalığı", () => {
     expect(state.masteryXp[0]).toBeGreaterThan(0);
     expect(report.levelUps.some((l) => l.name === "Çırak ustalığı")).toBe(true);
   });
+  it("caps offline XP at 24 h so clock jumps cannot max skills", () => {
+    const s = withCirak(200);
+    const day = applyOffline(s, 24 * 3600 * 1000, ALL).state;
+    const year = applyOffline(s, 365 * 24 * 3600 * 1000, ALL).state;
+    expect(year.masteryXp[0]).toBeCloseTo(day.masteryXp[0]);
+    expect(year.skillsXp.firincilik).toBeCloseTo(day.skillsXp.firincilik);
+  });
   it("is inert when the flag is off", () => {
     const s = withCirak(100);
     s.masteryXp[0] = xpForLevel(99);

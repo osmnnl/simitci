@@ -32,6 +32,7 @@ export const BALANCE = {
   offlineCapHoursMax: 12,
   offlineModalMinSeconds: 60,
   offlineXpEfficiency: 0.5,
+  offlineXpCapHours: 24, // skills/mastery train offline at most this long (also guards clock jumps)
 
   // Districts
   markaPerDistrict: 0.1,

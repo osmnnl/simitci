@@ -63,7 +63,7 @@ function levelSnapshot(s: GameState, f: FeatureFlags): { name: string; level: nu
   ];
 }
 
-/** Closed-form catch-up for time away; production capped, skills uncapped (Melvor-like). */
+/** Closed-form catch-up for time away; production capped (4–12 h), XP capped at 24 h (Melvor-like). */
 export function applyOffline(state: GameState, now: number, f: FeatureFlags = FEATURES): { state: GameState; report: OfflineReport } {
   const elapsed = Math.max(0, (now - state.lastSeen) / 1000);
   const capped = Math.min(elapsed, offlineCapSeconds(state, f));
@@ -80,7 +80,7 @@ export function applyOffline(state: GameState, now: number, f: FeatureFlags = FE
     earnings[id] = amount;
   }
   const before = levelSnapshot(state, f);
-  gainXp(s, elapsed, BALANCE.offlineXpEfficiency, f);
+  gainXp(s, Math.min(elapsed, BALANCE.offlineXpCapHours * 3600), BALANCE.offlineXpEfficiency, f);
   const after = levelSnapshot(s, f);
   const levelUps = after
     .map((a, i) => ({ name: a.name, from: before[i].level, to: a.level }))

@@ -71,7 +71,9 @@ export const useGame = create<Store>((set, get) => ({
   claimOrder: (slot) => set((s) => ({ game: A.claimOrder(s.game, slot, Date.now()) })),
   tick: (dt) => {
     const now = Date.now();
-    let game = eventTick(tick(get().game, dt, now), now, Math.random);
+    const ticked = tick(get().game, dt, now);
+    // no new events while the "Sen yokken" summary is still on screen
+    let game = get().offline ? ticked : eventTick(ticked, now, Math.random);
     const { state, unlocked } = checkAchievements(game);
     game = state;
     set((s) => ({ game, unseenAchievements: s.unseenAchievements + unlocked.length }));
