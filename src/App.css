@@ -144,7 +144,7 @@ button,.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .m-main .panel{padding:12px;border-width:2px}
 .m-main .clicker.compact{padding:18px 16px}
 .m-main .clicker.compact .simit-wrap{margin:8px 0}
-.m-main .clicker.compact .simit-btn svg{width:min(70vw,280px);height:auto}
+.m-main .clicker.compact .simit-btn svg{width:min(46vw,21dvh,210px);height:auto}
 .m-main .panel-head{position:sticky;top:0;background:var(--card);z-index:2;padding:4px 0 8px}
 .m-main .card{padding:10px}
 .m-main .buy{min-width:96px;min-height:48px}
@@ -180,3 +180,23 @@ button,.tab{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .toast{padding:8px 12px}
   .toast span{font-size:12px}
 }
+
+/* ---------- mobile pass 2 ---------- */
+.m-main .clicker{align-self:stretch}
+.m-main .clicker.compact{padding:14px 16px;gap:8px}
+.m-main .clicker.compact .simit-wrap{margin:2px 0}
+.devir-btn.soft{background:transparent;color:var(--page);border:2px solid rgba(255,241,207,.45)}
+.devir-btn.ready{box-shadow:0 0 0 3px rgba(232,166,74,.35)}
+.quick .panel-head{position:static;padding:0 0 6px}
+.quick-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.quick-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;border:2px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;background:#fffdf6}
+.quick-list .q-up{border-style:dashed}
+.q-name{font-weight:800;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-name small{font-weight:600;color:var(--muted)}
+.link{appearance:none;border:0;background:none;color:var(--cobalt);font-weight:800;font-size:14px;min-height:44px;padding:0 4px;cursor:pointer}
+.m-icon svg{display:block}
+.m-main .clicker.compact .devir{padding-top:8px;gap:6px}
+.m-main .clicker.compact .meter .label{font-size:12px}
+.devir-card{background:var(--cobalt);color:var(--page);border-radius:18px;padding:14px 16px;border-top:0}
+.devir-card .muted{color:rgba(255,241,207,.7)}
+.devir-card.is-ready{box-shadow:0 0 0 3px var(--gold)}

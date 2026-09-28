@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { DISTRICTS_BY_ID } from "../content/districts";
 import { FEATURES } from "../content/features";
 import { onlineIncome } from "../engine/derive";
 import { useGame } from "../store/gameStore";
 import { AchievementsPanel } from "./AchievementsPanel";
 import { tabBadges } from "./badges";
-import { ClickerPanel } from "./ClickerPanel";
+import { ClickerPanel, DevirBox } from "./ClickerPanel";
 import { DistrictTabs } from "./DistrictTabs";
 import { MasteryPanel } from "./MasteryPanel";
 import { OrdersPanel } from "./OrdersPanel";
@@ -14,15 +13,17 @@ import { SkillsPanel } from "./SkillsPanel";
 import { TierList } from "./TierList";
 import { UpgradePanel } from "./UpgradePanel";
 import { money } from "./format";
+import { NavIcon } from "./NavIcon";
+import { QuickBuy } from "./QuickBuy";
 
 type Tab = "dukkan" | "uretim" | "siparis" | "ustalik" | "basarim";
 
-const TABS: { id: Tab; label: string; icon: string; show: () => boolean }[] = [
-  { id: "dukkan", label: "Dükkân", icon: "◎", show: () => true },
-  { id: "uretim", label: "Üretim", icon: "▦", show: () => true },
-  { id: "siparis", label: "Sipariş", icon: "▤", show: () => FEATURES.orders },
-  { id: "ustalik", label: "Ustalık", icon: "★", show: () => FEATURES.skills || FEATURES.mastery },
-  { id: "basarim", label: FEATURES.achievements ? "Başarım" : "Ayarlar", icon: "✦", show: () => true },
+const TABS: { id: Tab; label: string; show: () => boolean }[] = [
+  { id: "dukkan", label: "Dükkân", show: () => true },
+  { id: "uretim", label: "Üretim", show: () => true },
+  { id: "siparis", label: "Sipariş", show: () => FEATURES.orders },
+  { id: "ustalik", label: "Ustalık", show: () => FEATURES.skills || FEATURES.mastery },
+  { id: "basarim", label: FEATURES.achievements ? "Başarım" : "Ayarlar", show: () => true },
 ];
 
 export function MobileShell() {
@@ -43,7 +44,7 @@ export function MobileShell() {
             <span className="m-money">{money(ds.money)}</span>
           </div>
           <div className="m-right">
-            <span className="m-label">{DISTRICTS_BY_ID[game.active].name}</span>
+            <span className="m-label">Gelir</span>
             <span className="m-rate">{money(inc)}/sn</span>
           </div>
         </div>
@@ -51,7 +52,7 @@ export function MobileShell() {
       </header>
 
       <main className="m-main" key={tab}>
-        {tab === "dukkan" && <ClickerPanel compact />}
+        {tab === "dukkan" && (<><ClickerPanel compact /><QuickBuy onMore={() => setTab("uretim")} />{FEATURES.devir && <DevirBox card />}</>)}
         {tab === "uretim" && (<><UpgradePanel /><TierList /></>)}
         {tab === "siparis" && <OrdersPanel />}
         {tab === "ustalik" && (<>{FEATURES.skills && <SkillsPanel />}{FEATURES.mastery && <MasteryPanel />}</>)}
@@ -63,7 +64,7 @@ export function MobileShell() {
           const badge = badges[t.id];
           return (
             <button key={t.id} type="button" className={"m-tab" + (tab === t.id ? " on" : "")} aria-current={tab === t.id ? "page" : undefined} onClick={() => setTab(t.id)}>
-              <span className="m-icon" aria-hidden="true">{t.icon}</span>
+              <span className="m-icon"><NavIcon name={t.id} /></span>
               <span className="m-tab-label">{t.label}</span>
               {badge && <span className="m-badge" aria-label={`${badge} yeni`}>{badge}</span>}
             </button>
