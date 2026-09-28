@@ -10,7 +10,7 @@ export const FEATURES = {
   crowd: true, // Faz 5
   mastery: true, // Faz 6: ürün ustalığı
   events: true, // Faz 7: rastgele olaylar
-  achievements: false, // Faz 8: başarımlar
+  achievements: true, // Faz 8: başarımlar
   mobileShell: false, // Faz 9: mobil arayüz
 };
 export type FeatureFlags = typeof FEATURES;
